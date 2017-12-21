@@ -10,12 +10,12 @@
 
 /*
  * Definition of key codes.
- * 
+ *
  * Key codes are normal JavaScript key codes. Add the following numbers to indicate pressed modifiers (also combineable):
  * SHIFT: 1000
  * CTRL: 2000
  * ALT: 4000
- * 
+ *
  * For this script to work correctly, it is necessary to also have the key codes without modifiers.
  * */
 var FORWARD = 39; // right
@@ -35,7 +35,7 @@ var JUMP_TO_MARK_WITHOUT_MODIFIERS = 77;
 var MARK_CURRENT_PAGE_WITHOUT_MODIFIERS = 77;
 var JUMP_TO_PAGE_WITHOUT_MODIFIERS = 74;
 var JUMP_TO_PAGE_MARK_WITHOUT_MODIFIERS = 74;
-var MY_COMICS_WITHOUT_MODIFIERS = 36; 
+var MY_COMICS_WITHOUT_MODIFIERS = 36;
 
 /*
  * Other constants
@@ -50,9 +50,9 @@ var LINK_TITLE_FORWARD = "Next page";
 var LINK_TITLE_BACK = "Previous page";
 var LINK_TITLE_FIRST = "First page";
 var LINK_TITLE_LAST = "Last page";
-var LINK_TITLE_JUMP_TO_MARK = "Jump to mark"
-var LINK_URL_MARK_CURRENT_PAGE = "?mark"
-var LINK_URL_MY_COMICS = "/"
+var LINK_TITLE_JUMP_TO_MARK = "Jump to mark";
+var LINK_URL_MARK_CURRENT_PAGE = "?mark";
+var LINK_URL_MY_COMICS = "/";
 var KEYCODEMODIFIER_SHIFT = 1000;
 var KEYCODEMODIFIER_CTRL = 2000;
 var KEYCODEMODIFIER_ALT = 4000;
@@ -121,7 +121,7 @@ function keyUpInIframe(e) {
 }
 
 /*
- * Monitors modifier keys (SHIFT, CTRL, ALT) for being pressed. 
+ * Monitors modifier keys (SHIFT, CTRL, ALT) for being pressed.
  * */
 function keyDownInIframe(e) {
     switch (e.keyCode) {
@@ -154,7 +154,7 @@ function getSumOfPressedModifiers() {
         returnValue += KEYCODEMODIFIER_ALT;
     }
     return returnValue;
-}    
+}
 
 /*
  * Forwards a key press to the navigation bar. If we are already in the navigation bar, the key press is handled.
@@ -232,8 +232,8 @@ function getPageNumberFromUser(setMark) {
     }
     textToDisplay += 'be set):';
     var pageNumberAsString = prompt(textToDisplay);
-    if (pageNumberAsString != null) {
-        return parseInt(pageNumberAsString)
+    if (pageNumberAsString !== null) {
+        return parseInt(pageNumberAsString);
     }
     return null;
 }
@@ -242,7 +242,7 @@ function getPageNumberFromUser(setMark) {
  * Checks if the given page number is in the valid range of the current comic.
  * */
 function isValidPageNumber(pageNumber) {
-    if (pageNumber != null) {
+    if (pageNumber !== null) {
         if (pageNumber > 0 && pageNumber <= getMaxPageNumber()) {
             return true;
         }
@@ -255,18 +255,18 @@ function isValidPageNumber(pageNumber) {
  * */
 function getMaxPageNumber() {
     var lastPageLink = getLinkIdentifiedByAttribute(TITLE, LINK_TITLE_LAST);
-    if (lastPageLink != null && lastPageLink.text != null) {
+    if (lastPageLink !== null && lastPageLink.text !== null) {
         return parseInt(lastPageLink.text.replace(/,/g, ''));
     }
     return 0;
-}            
+}
 
 /*
  * Follows a link in the current frame that is identified by the given attribute.
  * */
 function followLinkIdentifiedByAttribute(key, value) {
     var link = getLinkIdentifiedByAttribute(key, value);
-    if (link != null) {
+    if (link !== null) {
         link.click();
     }
 }
@@ -276,7 +276,7 @@ function followLinkIdentifiedByAttribute(key, value) {
  * */
 function getLinkURLIdentifiedByAttribute(key, value) {
     var link = getLinkIdentifiedByAttribute(key, value);
-    if (link != null) {
+    if (link !== null) {
         return link.getAttribute('href');
     }
     return null;
@@ -288,8 +288,8 @@ function getLinkURLIdentifiedByAttribute(key, value) {
 function getLinkIdentifiedByAttribute(key, value) {
     var allLinks = document.body.getElementsByTagName("a");
     for (var i = 0; i < allLinks.length; i++) {
-        var attribute = allLinks[i].getAttribute(key)
-        if(attribute != null && attribute.substring(0, value.length) == value){  
+        var attribute = allLinks[i].getAttribute(key);
+        if(attribute !== null && attribute.substring(0, value.length) == value){
             return allLinks[i];
         }
     }
@@ -332,26 +332,19 @@ function receiveMessageFromContainer (event) {
     when we need them.  See Firefox and other browsers for the correct behavior.
 */
 function sendMessageFromAnIframe (message, targetDomain) {
-    var scriptNode          = document.createElement ('script');
-    scriptNode.textContent  = 'top.postMessage ("' + message
-        + '", "' + targetDomain + '");'
-    ;
+    var scriptNode = document.createElement ('script');
+    scriptNode.textContent  = 'top.postMessage ("' + message + '", "' + targetDomain + '");';
     document.body.appendChild (scriptNode);
 }
 
 function sendMessageToAnIframe (cssSelector, message, targetDomain) {
     function findIframeAndMessageIt (cssSelector, message, targetDomain) {
-        var targetIframe    = document.querySelector (cssSelector)
+        var targetIframe = document.querySelector (cssSelector);
         if (targetIframe) {
             targetIframe.contentWindow.postMessage (message, targetDomain);
         }
     }
-    var scriptNode          = document.createElement ('script');
-    scriptNode.textContent  = findIframeAndMessageIt.toString ()
-        + 'findIframeAndMessageIt ("' + cssSelector
-        + '", "' + message
-        + '", "' + targetDomain + '");'
-    ;
+    var scriptNode = document.createElement ('script');
+    scriptNode.textContent = findIframeAndMessageIt.toString () + 'findIframeAndMessageIt ("' + cssSelector + '", "' + message + '", "' + targetDomain + '");';
     document.body.appendChild (scriptNode);
 }
-
