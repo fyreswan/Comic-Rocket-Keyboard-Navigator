@@ -66,28 +66,7 @@ var isShiftKeyPressed = false;
 var isCtrlKeyPressed = false;
 var isAltKeyPressed = false;
 
-/*
- * Registration of listeners for windows
- * */
-if (window.top === window.self) {
-    // container needs to forward messages
-    if (location.href.substring(0, CONTAINER_URLPREFIX.length) == CONTAINER_URLPREFIX) {
-        window.addEventListener ("message", receiveMessageFromFrame, false);
-    }
-    // we do not care about other top level pages because these are different web pages
 
-} else {
-
-    // frames need to monitor key presses
-    // TODO: add a check if top page really is Comic Rocket to keep this script from doing stuff at other pages. Don't know how to do it because of SOP
-    document.addEventListener('keyup', keyUpInIframe, false);
-    document.addEventListener('keydown', keyDownInIframe, false);
-
-    // navigation bar needs to handle key presses from other frames
-    if (location.href.substring(0, NAVIGATIONBAR_URLPREFIX.length) == NAVIGATIONBAR_URLPREFIX) {
-        window.addEventListener ("message", receiveMessageFromContainer, false);
-    }
-}
 
 /*
  * Handles key presses in iframes by forwarding the correct key presses to the navigation bar. Also handles monitoring of modifier keys (SHIFT, CTRL, ALT).
@@ -348,3 +327,28 @@ function sendMessageToAnIframe (cssSelector, message, targetDomain) {
     scriptNode.textContent = findIframeAndMessageIt.toString () + 'findIframeAndMessageIt ("' + cssSelector + '", "' + message + '", "' + targetDomain + '");';
     document.body.appendChild (scriptNode);
 }
+$(document).ready(function () {
+    $(window).focus();
+    /*
+     * Registration of listeners for windows
+     * */
+    if (window.top === window.self) {
+        // container needs to forward messages
+        if (location.href.substring(0, CONTAINER_URLPREFIX.length) == CONTAINER_URLPREFIX) {
+            window.addEventListener ("message", receiveMessageFromFrame, false);
+        }
+        // we do not care about other top level pages because these are different web pages
+
+    } else {
+
+        // frames need to monitor key presses
+        // TODO: add a check if top page really is Comic Rocket to keep this script from doing stuff at other pages. Don't know how to do it because of SOP
+        document.addEventListener('keyup', keyUpInIframe, false);
+        document.addEventListener('keydown', keyDownInIframe, false);
+
+        // navigation bar needs to handle key presses from other frames
+        if (location.href.substring(0, NAVIGATIONBAR_URLPREFIX.length) == NAVIGATIONBAR_URLPREFIX) {
+            window.addEventListener ("message", receiveMessageFromContainer, false);
+        }
+    }
+});
